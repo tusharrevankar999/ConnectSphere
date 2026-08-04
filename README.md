@@ -1,10 +1,5 @@
 # ConnectSphere — Graph-Powered Investor SaaS & Networking Platform
 
-> **Wexa AI — Candidate Take-Home Assignment Submission**  
-> **Application**: ConnectSphere  
-> **Database Layer**: CognoDB (openCypher over Bolt protocol via official `neo4j-driver`)  
-> **Framework**: Next.js 15 App Router (React Server Components SSR + Client Component Islands), TypeScript, Tailwind CSS, Framer Motion, Zustand
-
 ---
 
 ## 🌟 Executive Summary & Use Case
@@ -210,4 +205,3 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - **Deliverable**: GitHub Repository containing full source code, seed scripts, Cypher queries, and documentation.
 - **Recipient**: `hr@wexa.ai`
 - **Subject Line**: `CognoDB Assignment 2 – Ganesh`
-# ConnectSphere
