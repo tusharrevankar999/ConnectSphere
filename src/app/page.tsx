@@ -90,7 +90,7 @@ export default async function DashboardPage() {
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping" /> Graph Topology Statistics (SSR)
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping" /> Statistics
           </h2>
           <span className="text-xs font-semibold text-slate-500 flex items-center gap-1.5 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
             <span className="w-2 h-2 rounded-full bg-emerald-500" /> Live Platform Sync
