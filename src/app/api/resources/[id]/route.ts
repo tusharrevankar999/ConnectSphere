@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { InvestorService } from '@/lib/services/investorService';
+import { ResourceService } from '@/lib/services/resourceService';
 import { handleApiError } from '@/lib/errors';
 
 export async function GET(
@@ -8,12 +8,12 @@ export async function GET(
 ) {
   try {
     const { id } = await context.params;
-    const investorService = new InvestorService();
-    const investor = await investorService.getInvestorById(id);
+    const resourceService = new ResourceService();
+    const resource = await resourceService.getResourceById(id);
 
     return NextResponse.json({
       success: true,
-      data: investor,
+      data: resource,
     });
   } catch (error) {
     return handleApiError(error);
@@ -27,8 +27,8 @@ export async function PUT(
   try {
     const { id } = await context.params;
     const body = await request.json();
-    const investorService = new InvestorService();
-    const updated = await investorService.updateInvestor(id, body);
+    const resourceService = new ResourceService();
+    const updated = await resourceService.updateResource(id, body);
 
     return NextResponse.json({
       success: true,
@@ -45,15 +45,14 @@ export async function DELETE(
 ) {
   try {
     const { id } = await context.params;
-    const investorService = new InvestorService();
-    await investorService.deleteInvestor(id);
+    const resourceService = new ResourceService();
+    await resourceService.deleteResource(id);
 
     return NextResponse.json({
       success: true,
-      message: `Investor ${id} deleted successfully.`,
+      message: `Resource ${id} deleted successfully.`,
     });
   } catch (error) {
     return handleApiError(error);
   }
 }
-

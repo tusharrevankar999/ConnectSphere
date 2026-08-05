@@ -221,7 +221,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onSel
           <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-              CognoDB Graph Index: 78 Nodes Active
+              CognoDB Graph Index: 78 Items Active
+
             </div>
             <div className="flex items-center gap-1 font-medium text-blue-600">
               Press Enter to view graph <ArrowRight className="w-3.5 h-3.5" />

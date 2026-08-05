@@ -1,6 +1,25 @@
 export type FundingStage = 'Pre-Seed' | 'Seed' | 'Series A' | 'Series B' | 'Series C' | 'Growth';
 
-export type NodeType = 'Founder' | 'Startup' | 'Investor' | 'Mentor' | 'Technology' | 'Industry' | 'Location' | 'Event';
+export type NodeType = 'Founder' | 'Startup' | 'Investor' | 'Mentor' | 'Technology' | 'Industry' | 'Location' | 'Event' | 'Resource';
+
+export interface Resource {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  providerName: string;
+  providerRole: string;
+  contactEmail: string;
+  contactPhone?: string;
+  skills: string[];
+  rating?: number;
+  availability: 'Available Now' | 'In Progress' | 'Limited Slots' | 'Booked';
+  location: string;
+  avatar?: string;
+}
+
+
+
 
 export type RelationshipType = 
   | 'FOUNDED' 

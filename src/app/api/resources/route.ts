@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { InvestorService } from '@/lib/services/investorService';
+import { ResourceService } from '@/lib/services/resourceService';
 import { handleApiError, ValidationError } from '@/lib/errors';
 
 export async function GET(request: NextRequest) {
@@ -8,13 +8,14 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') || undefined;
     const limit = searchParams.get('limit') ? Number(searchParams.get('limit')) : undefined;
 
-    const investorService = new InvestorService();
-    const investors = await investorService.getInvestors({ search, limit });
+    const resourceService = new ResourceService();
+    const resources = await resourceService.getResources({ search, limit });
+
 
     return NextResponse.json({
       success: true,
-      count: investors.length,
-      data: investors,
+      count: resources.length,
+      data: resources,
     });
   } catch (error) {
     return handleApiError(error);
@@ -24,13 +25,13 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    if (!body.name || !body.firm) {
-      throw new ValidationError('Name and firm are required fields.');
+    if (!body.title || !body.providerName) {
+      throw new ValidationError('Title and providerName are required fields.');
     }
 
-    const investorService = new InvestorService();
-    const created = await investorService.createInvestor({
-      id: body.id || `inv-${Date.now()}`,
+    const resourceService = new ResourceService();
+    const created = await resourceService.createResource({
+      id: body.id || `res-${Date.now()}`,
       ...body,
     });
 
@@ -39,4 +40,3 @@ export async function POST(request: NextRequest) {
     return handleApiError(error);
   }
 }
-

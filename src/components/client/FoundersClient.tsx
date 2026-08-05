@@ -93,7 +93,7 @@ export const FoundersClient: React.FC<FoundersClientProps> = ({ initialFounders 
           );
           toast({
             title: 'Founder Updated Successfully!',
-            description: `${formData.name}'s founder node updated in CognoDB.`,
+            description: `${formData.name}'s founder profile updated in CognoDB.`,
             variant: 'success',
           });
         } else {
@@ -117,7 +117,7 @@ export const FoundersClient: React.FC<FoundersClientProps> = ({ initialFounders 
           topTech: ['Next.js 15', 'TypeScript', 'PyTorch'],
           mentors: ['m-1'],
           investors: ['inv-1'],
-          recentActivity: 'Created new graph node in ecosystem.',
+          recentActivity: 'Created profile in ecosystem.',
         };
 
         const res = await fetch('/api/founders', {
@@ -131,11 +131,11 @@ export const FoundersClient: React.FC<FoundersClientProps> = ({ initialFounders 
           setFoundersList((prev) => [newFounder, ...prev]);
           toast({
             title: 'Founder Created Successfully!',
-            description: `${newFounder.name} added to graph topology.`,
+            description: `${newFounder.name} added to ecosystem directory.`,
             variant: 'success',
           });
         } else {
-          throw new Error(json.error?.message || 'Failed to create founder node.');
+          throw new Error(json.error?.message || 'Failed to create founder profile.');
         }
       }
     } catch (err: unknown) {
@@ -161,16 +161,16 @@ export const FoundersClient: React.FC<FoundersClientProps> = ({ initialFounders 
         setFoundersList((prev) => prev.filter((f) => f.id !== deletingFounder.id));
         toast({
           title: 'Founder Deleted Successfully!',
-          description: `${deletingFounder.name} node detached from graph topology.`,
+          description: `${deletingFounder.name} removed from ecosystem directory.`,
           variant: 'success',
         });
       } else {
-        throw new Error(json.error?.message || 'Failed to delete node.');
+        throw new Error(json.error?.message || 'Failed to delete founder.');
       }
     } catch (err: unknown) {
       toast({
         title: 'Deletion Failed',
-        description: err instanceof Error ? err.message : 'Unable to detach node.',
+        description: err instanceof Error ? err.message : 'Unable to remove founder.',
         variant: 'error',
       });
     } finally {
@@ -178,6 +178,7 @@ export const FoundersClient: React.FC<FoundersClientProps> = ({ initialFounders 
       setDeletingFounder(null);
     }
   };
+
 
   return (
     <div className="space-y-6">
@@ -374,9 +375,10 @@ export const FoundersClient: React.FC<FoundersClientProps> = ({ initialFounders 
       {/* Custom Popup Alert Box Modal for Confirming Delete */}
       <ConfirmModal
         isOpen={!!deletingFounder}
-        title="Delete Founder Node"
-        message={`Are you sure you want to delete ${deletingFounder?.name} (${deletingFounder?.startupName}) from graph topology?`}
+        title="Delete Founder"
+        message={`Are you sure you want to delete ${deletingFounder?.name} (${deletingFounder?.startupName}) from ecosystem directory?`}
         confirmText="Delete Founder"
+
         cancelText="Cancel"
         loading={isDeleting}
         onConfirm={handleConfirmDelete}

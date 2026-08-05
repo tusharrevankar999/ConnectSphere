@@ -71,7 +71,7 @@ export const StartupsClient: React.FC<StartupsClientProps> = ({ initialStartups 
           );
           toast({
             title: 'Startup Updated Successfully!',
-            description: `${formData.name}'s node properties updated in CognoDB.`,
+            description: `${formData.name}'s startup profile updated in CognoDB.`,
             variant: 'success',
           });
         } else {
@@ -83,7 +83,7 @@ export const StartupsClient: React.FC<StartupsClientProps> = ({ initialStartups 
           id: `stp-${Date.now()}`,
           name: formData.name || 'New Startup',
           logo: formData.logo || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80',
-          pitch: formData.pitch || 'Building next-generation graph AI software.',
+          pitch: formData.pitch || 'Building next-generation AI software.',
           industry: formData.industry || 'Artificial Intelligence',
           fundingStage: formData.fundingStage || 'Seed',
           teamSize: Number(formData.teamSize || 12),
@@ -108,11 +108,11 @@ export const StartupsClient: React.FC<StartupsClientProps> = ({ initialStartups 
           setStartupsList((prev) => [newStartup, ...prev]);
           toast({
             title: 'Startup Created Successfully!',
-            description: `${newStartup.name} added to ecosystem graph topology.`,
+            description: `${newStartup.name} added to ecosystem directory.`,
             variant: 'success',
           });
         } else {
-          throw new Error(json.error?.message || 'Failed to create startup node.');
+          throw new Error(json.error?.message || 'Failed to create startup profile.');
         }
       }
     } catch (err: unknown) {
@@ -138,16 +138,16 @@ export const StartupsClient: React.FC<StartupsClientProps> = ({ initialStartups 
         setStartupsList((prev) => prev.filter((s) => s.id !== deletingStartup.id));
         toast({
           title: 'Startup Deleted Successfully!',
-          description: `${deletingStartup.name} detached from graph topology.`,
+          description: `${deletingStartup.name} removed from ecosystem directory.`,
           variant: 'success',
         });
       } else {
-        throw new Error(json.error?.message || 'Failed to delete startup node.');
+        throw new Error(json.error?.message || 'Failed to delete startup.');
       }
     } catch (err: unknown) {
       toast({
         title: 'Deletion Failed',
-        description: err instanceof Error ? err.message : 'Unable to detach node.',
+        description: err instanceof Error ? err.message : 'Unable to remove startup.',
         variant: 'error',
       });
     } finally {
@@ -155,6 +155,7 @@ export const StartupsClient: React.FC<StartupsClientProps> = ({ initialStartups 
       setDeletingStartup(null);
     }
   };
+
 
   return (
     <div className="space-y-6">
@@ -360,9 +361,10 @@ export const StartupsClient: React.FC<StartupsClientProps> = ({ initialStartups 
       {/* Delete Confirmation Custom Modal */}
       <ConfirmModal
         isOpen={!!deletingStartup}
-        title="Delete Startup Node"
-        message={`Are you sure you want to delete ${deletingStartup?.name} from graph topology?`}
+        title="Delete Startup"
+        message={`Are you sure you want to delete ${deletingStartup?.name} from ecosystem directory?`}
         confirmText="Delete Startup"
+
         cancelText="Cancel"
         loading={isDeleting}
         onConfirm={handleConfirmDelete}

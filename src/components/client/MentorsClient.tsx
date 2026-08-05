@@ -7,26 +7,30 @@ import { Mentor } from '@/types';
 import { Search, Star, UserPlus } from 'lucide-react';
 import { ProfileDrawer } from '@/components/ui/ProfileDrawer';
 import { useToast } from '@/components/ui/Toast';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 interface MentorsClientProps {
   initialMentors: Mentor[];
 }
 
 export const MentorsClient: React.FC<MentorsClientProps> = ({ initialMentors }) => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedMentorId, setSelectedMentorId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const { toast } = useToast();
 
-  const search = searchParams.get('search') || '';
-
-  const handleSearchChange = (val: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    if (val) params.set('search', val);
-    else params.delete('search');
-    router.replace(`/mentors?${params.toString()}`);
-  };
+  const filteredMentors = initialMentors.filter((m) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      m.name.toLowerCase().includes(q) ||
+      m.company.toLowerCase().includes(q) ||
+      m.title.toLowerCase().includes(q) ||
+      (m.expertise && m.expertise.some((exp) => exp.toLowerCase().includes(q))) ||
+      (m.technologies && m.technologies.some((tech) => tech.toLowerCase().includes(q))) ||
+      (m.bio && m.bio.toLowerCase().includes(q))
+    );
+  });
 
   return (
     <div className="space-y-6">
@@ -37,7 +41,7 @@ export const MentorsClient: React.FC<MentorsClientProps> = ({ initialMentors }) 
         </div>
 
         <span className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200/60">
-          {initialMentors.length} Mentors Available
+          {filteredMentors.length} Mentors Available
         </span>
       </div>
 
@@ -46,14 +50,14 @@ export const MentorsClient: React.FC<MentorsClientProps> = ({ initialMentors }) 
         <input
           type="text"
           placeholder="Search mentor name, company, or domain expertise..."
-          value={search}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 shadow-2xs"
         />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {initialMentors.map((m) => (
+        {filteredMentors.map((m) => (
           <Card key={m.id} className="flex flex-col justify-between space-y-4">
             <div>
               <div className="flex items-start justify-between">
@@ -124,3 +128,4 @@ export const MentorsClient: React.FC<MentorsClientProps> = ({ initialMentors }) 
     </div>
   );
 };
+
