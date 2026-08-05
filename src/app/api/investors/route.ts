@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { InvestorService } from '@/lib/services/investorService';
-import { handleApiError } from '@/lib/errors';
+import { handleApiError, ValidationError } from '@/lib/errors';
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,3 +20,23 @@ export async function GET(request: NextRequest) {
     return handleApiError(error);
   }
 }
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    if (!body.name || !body.firm) {
+      throw new ValidationError('Name and firm are required fields.');
+    }
+
+    const investorService = new InvestorService();
+    const created = await investorService.createInvestor({
+      id: body.id || `inv-${Date.now()}`,
+      ...body,
+    });
+
+    return NextResponse.json({ success: true, data: created }, { status: 201 });
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+

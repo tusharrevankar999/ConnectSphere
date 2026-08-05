@@ -28,3 +28,24 @@ export const CREATE_INVESTOR_QUERY = `
   })
   RETURN i
 `;
+
+export const UPDATE_INVESTOR_QUERY = `
+  MATCH (i:Investor {id: $id})
+  SET i.name = $name,
+      i.photo = $photo,
+      i.firm = $firm,
+      i.role = $role,
+      i.focusIndustries = $focusIndustries,
+      i.portfolioCount = toInteger($portfolioCount),
+      i.recentInvestments = $recentInvestments,
+      i.ticketSize = $ticketSize,
+      i.totalDeals = toInteger($totalDeals),
+      i.bio = $bio
+  RETURN i
+`;
+
+export const DELETE_INVESTOR_QUERY = `
+  MATCH (i:Investor {id: $id})
+  DETACH DELETE i
+`;
+

@@ -16,4 +16,21 @@ export class InvestorService {
     }
     return investor;
   }
+
+  async createInvestor(data: Investor): Promise<Investor> {
+    return this.repo.create(data);
+  }
+
+  async updateInvestor(id: string, data: Partial<Investor>): Promise<Investor> {
+    const updated = await this.repo.update(id, data);
+    if (!updated) {
+      throw new NotFoundError(`Investor with ID '${id}' not found`);
+    }
+    return updated;
+  }
+
+  async deleteInvestor(id: string): Promise<boolean> {
+    return this.repo.delete(id);
+  }
 }
+

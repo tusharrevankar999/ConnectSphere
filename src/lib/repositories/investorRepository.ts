@@ -1,5 +1,11 @@
 import { executeRead, executeWrite, testCognoConnection } from '../cognodb';
-import { GET_ALL_INVESTORS_QUERY, GET_INVESTOR_BY_ID_QUERY, CREATE_INVESTOR_QUERY } from '../queries/investorQueries';
+import { 
+  GET_ALL_INVESTORS_QUERY, 
+  GET_INVESTOR_BY_ID_QUERY, 
+  CREATE_INVESTOR_QUERY,
+  UPDATE_INVESTOR_QUERY,
+  DELETE_INVESTOR_QUERY
+} from '../queries/investorQueries';
 import { Investor } from '@/types';
 import { mockInvestors } from '@/data/mockData';
 
@@ -7,9 +13,17 @@ export class InvestorRepository {
   async getAll(options: { search?: string; limit?: number } = {}): Promise<Investor[]> {
     const isConnected = await testCognoConnection();
     if (!isConnected) {
-      return mockInvestors.filter((i) =>
-        !options.search || i.name.toLowerCase().includes(options.search.toLowerCase()) || i.firm.toLowerCase().includes(options.search.toLowerCase())
-      );
+      return mockInvestors.filter((i) => {
+        if (!options.search) return true;
+        const q = options.search.toLowerCase();
+        return (
+          i.name.toLowerCase().includes(q) ||
+          i.firm.toLowerCase().includes(q) ||
+          i.role.toLowerCase().includes(q) ||
+          i.focusIndustries.some((ind) => ind.toLowerCase().includes(q)) ||
+          i.recentInvestments.some((rec) => rec.toLowerCase().includes(q))
+        );
+      });
     }
 
     try {
@@ -73,7 +87,7 @@ export class InvestorRepository {
   async create(investor: Investor): Promise<Investor> {
     const isConnected = await testCognoConnection();
     if (!isConnected) {
-      mockInvestors.push(investor);
+      mockInvestors.unshift(investor);
       return investor;
     }
 
@@ -83,4 +97,36 @@ export class InvestorRepository {
       (records) => records[0].get('i').properties as Investor
     );
   }
+
+  async update(id: string, investor: Partial<Investor>): Promise<Investor | null> {
+    const isConnected = await testCognoConnection();
+    if (!isConnected) {
+      const idx = mockInvestors.findIndex((i) => i.id === id);
+      if (idx !== -1) {
+        mockInvestors[idx] = { ...mockInvestors[idx], ...investor };
+        return mockInvestors[idx];
+      }
+      return null;
+    }
+
+    return executeWrite(
+      UPDATE_INVESTOR_QUERY,
+      { id, ...investor },
+      (records) => (records[0] ? (records[0].get('i').properties as Investor) : null)
+    );
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const isConnected = await testCognoConnection();
+    const idx = mockInvestors.findIndex((i) => i.id === id);
+    if (idx !== -1) {
+      mockInvestors.splice(idx, 1);
+    }
+
+    if (isConnected) {
+      await executeWrite(DELETE_INVESTOR_QUERY, { id });
+    }
+    return true;
+  }
 }
+

@@ -19,3 +19,41 @@ export async function GET(
     return handleApiError(error);
   }
 }
+
+export async function PUT(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params;
+    const body = await request.json();
+    const investorService = new InvestorService();
+    const updated = await investorService.updateInvestor(id, body);
+
+    return NextResponse.json({
+      success: true,
+      data: updated,
+    });
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await context.params;
+    const investorService = new InvestorService();
+    await investorService.deleteInvestor(id);
+
+    return NextResponse.json({
+      success: true,
+      message: `Investor ${id} deleted successfully.`,
+    });
+  } catch (error) {
+    return handleApiError(error);
+  }
+}
+
