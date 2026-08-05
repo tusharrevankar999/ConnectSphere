@@ -120,11 +120,12 @@ export const AddInvestorDrawer: React.FC<AddInvestorDrawerProps> = ({
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-900">
-                  {editInvestor ? 'Edit Investor Profile' : 'Add New Investor Node'}
+                  {editInvestor ? 'Edit Investor Profile' : 'Add New Investor'}
                 </h3>
                 <p className="text-xs text-slate-500 font-medium">
-                  {editInvestor ? 'Update VC or Angel node details' : 'Enter VC firm or Angel investor details below'}
+                  {editInvestor ? 'Update VC or Angel details' : 'Enter VC firm or Angel investor details below'}
                 </p>
+
               </div>
             </div>
 

@@ -9,7 +9,7 @@ import {
   Building2, 
   Briefcase, 
   GraduationCap, 
-  Layers, 
+  FolderGit2, 
   Sparkles, 
   Settings,
   Database
@@ -26,12 +26,13 @@ export const navItems = [
   { name: 'Startups', href: '/startups', icon: Building2 },
   { name: 'Investors', href: '/investors', icon: Briefcase },
   { name: 'Mentors', href: '/mentors', icon: GraduationCap },
-  // { name: 'Technologies', href: '/technologies', icon: Cpu },
-  { name: 'Industries', href: '/industries', icon: Layers },
+  { name: 'Resources', href: '/resources', icon: FolderGit2 },
+  // { name: 'Industries', href: '/industries', icon: Layers },
   { name: 'Recommendations', href: '/recommendations', icon: Sparkles, badge: 'AI Match' },
   // { name: 'Graph Explorer', href: '/graph-explorer', icon: GitMerge, badge: 'Live 2D' },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
+
 
 export const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
   const pathname = usePathname();
@@ -96,8 +97,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed = false }) => {
             <Database className="w-4 h-4 text-blue-600" /> Platform Connected
           </div>
           <p className="text-[11px] text-slate-600 leading-tight">
-            Graph database engine actively syncing 78 nodes and 142 relationship edges.
+            Graph database engine actively syncing 78 items and 142 relationship edges.
           </p>
+
         </div>
       )}
     </aside>

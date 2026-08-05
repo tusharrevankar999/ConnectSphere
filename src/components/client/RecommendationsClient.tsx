@@ -94,7 +94,8 @@ export const RecommendationsClient: React.FC<RecommendationsClientProps> = ({ in
               <span className="text-xs text-slate-500 font-medium">Verified by Graph Traversal</span>
 
               <button
-                onClick={() => toast({ title: `Connection request sent to ${rec.name}`, description: 'CognoDB node edge requested.' })}
+                onClick={() => toast({ title: `Connection request sent to ${rec.name}`, description: 'CognoDB connection edge requested.' })}
+
                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold shadow-md transition-all flex items-center gap-1.5"
               >
                 <UserPlus className="w-3.5 h-3.5" /> Request Link

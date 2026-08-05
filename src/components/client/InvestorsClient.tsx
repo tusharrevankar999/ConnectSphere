@@ -72,7 +72,7 @@ export const InvestorsClient: React.FC<InvestorsClientProps> = ({ initialInvesto
           );
           toast({
             title: 'Investor Updated Successfully!',
-            description: `${formData.name}'s investor node updated in CognoDB.`,
+            description: `${formData.name}'s investor profile updated in CognoDB.`,
             variant: 'success',
           });
         } else {
@@ -105,11 +105,11 @@ export const InvestorsClient: React.FC<InvestorsClientProps> = ({ initialInvesto
           setInvestorsList((prev) => [newInvestor, ...prev]);
           toast({
             title: 'Investor Created Successfully!',
-            description: `${newInvestor.name} added to graph topology.`,
+            description: `${newInvestor.name} added to ecosystem directory.`,
             variant: 'success',
           });
         } else {
-          throw new Error(json.error?.message || 'Failed to create investor node.');
+          throw new Error(json.error?.message || 'Failed to create investor profile.');
         }
       }
     } catch (err: unknown) {
@@ -135,16 +135,16 @@ export const InvestorsClient: React.FC<InvestorsClientProps> = ({ initialInvesto
         setInvestorsList((prev) => prev.filter((i) => i.id !== deletingInvestor.id));
         toast({
           title: 'Investor Deleted Successfully!',
-          description: `${deletingInvestor.name} node detached from graph topology.`,
+          description: `${deletingInvestor.name} removed from ecosystem directory.`,
           variant: 'success',
         });
       } else {
-        throw new Error(json.error?.message || 'Failed to delete investor node.');
+        throw new Error(json.error?.message || 'Failed to delete investor.');
       }
     } catch (err: unknown) {
       toast({
         title: 'Deletion Failed',
-        description: err instanceof Error ? err.message : 'Unable to detach node.',
+        description: err instanceof Error ? err.message : 'Unable to remove investor.',
         variant: 'error',
       });
     } finally {
@@ -152,6 +152,7 @@ export const InvestorsClient: React.FC<InvestorsClientProps> = ({ initialInvesto
       setDeletingInvestor(null);
     }
   };
+
 
   return (
     <div className="space-y-6">
@@ -343,9 +344,10 @@ export const InvestorsClient: React.FC<InvestorsClientProps> = ({ initialInvesto
       {/* Custom Modal for Confirming Deletion */}
       <ConfirmModal
         isOpen={!!deletingInvestor}
-        title="Delete Investor Node"
-        message={`Are you sure you want to delete ${deletingInvestor?.name} (${deletingInvestor?.firm}) from graph topology?`}
+        title="Delete Investor"
+        message={`Are you sure you want to delete ${deletingInvestor?.name} (${deletingInvestor?.firm}) from ecosystem directory?`}
         confirmText="Delete Investor"
+
         cancelText="Cancel"
         loading={isDeleting}
         onConfirm={handleConfirmDelete}

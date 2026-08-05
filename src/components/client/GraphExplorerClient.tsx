@@ -155,7 +155,8 @@ export const GraphExplorerClient: React.FC<GraphExplorerClientProps> = ({ initia
       const dist = Math.hypot(clickX - pos.x, clickY - pos.y);
       if (dist <= node.val + 6) {
         setSelectedNode(node);
-        toast({ title: `Selected ${node.label}`, description: `Loaded node schema for type ${node.type}` });
+        toast({ title: `Selected ${node.label}`, description: `Loaded schema for type ${node.type}` });
+
         return;
       }
     }
@@ -189,7 +190,8 @@ export const GraphExplorerClient: React.FC<GraphExplorerClientProps> = ({ initia
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
             <GitMerge className="w-7 h-7 text-blue-600" /> Interactive Graph Explorer
           </h1>
-          <p className="text-sm text-slate-500 mt-1">2D Node-Link visualization mapping entity relations in CognoDB graph format.</p>
+          <p className="text-sm text-slate-500 mt-1">2D Topology visualization mapping entity relations in CognoDB graph format.</p>
+
         </div>
 
         <div className="flex flex-wrap items-center gap-2 bg-white p-2.5 rounded-2xl border border-slate-200 shadow-2xs">
@@ -272,7 +274,7 @@ export const GraphExplorerClient: React.FC<GraphExplorerClientProps> = ({ initia
 
           <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 flex items-center gap-2 shadow-2xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Showing {filteredNodes.length} Nodes & {activeEdges.length} Edges
+            Showing {filteredNodes.length} Entities & {activeEdges.length} Edges
           </div>
         </div>
 
@@ -282,7 +284,7 @@ export const GraphExplorerClient: React.FC<GraphExplorerClientProps> = ({ initia
               <div className="flex items-start justify-between pb-4 border-b border-slate-100">
                 <div>
                   <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600 block">
-                    Selected Graph Node
+                    Selected Graph Entity
                   </span>
                   <h3 className="text-xl font-bold text-slate-900 mt-0.5">{selectedNode.label}</h3>
                   <p className="text-xs text-slate-500 font-medium">{selectedNode.subtitle}</p>
@@ -291,16 +293,17 @@ export const GraphExplorerClient: React.FC<GraphExplorerClientProps> = ({ initia
               </div>
 
               <div>
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Node Parameters</h4>
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Entity Parameters</h4>
                 <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Node ID:</span>
+                    <span className="text-slate-500">Entity ID:</span>
                     <span className="font-mono font-bold text-slate-800">{selectedNode.id}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Node Rank / Weight:</span>
+                    <span className="text-slate-500">Entity Rank / Weight:</span>
                     <span className="font-bold text-blue-600">{selectedNode.val}</span>
                   </div>
+
                   {selectedNode.details && Object.entries(selectedNode.details).map(([k, v]) => (
                     <div key={k} className="flex justify-between">
                       <span className="text-slate-500 capitalize">{k}:</span>
