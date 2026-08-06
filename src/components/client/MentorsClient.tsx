@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Mentor } from '@/types';
-import { Search, Star, UserPlus, Pencil, Trash2, GraduationCap } from 'lucide-react';
+import { Search, Star, UserPlus, Pencil, Trash2, GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ProfileDrawer } from '@/components/ui/ProfileDrawer';
 import { AddMentorDrawer } from '@/components/ui/AddMentorDrawer';
 import { ConfirmModal } from '@/components/ui/ConfirmModal';
@@ -15,6 +15,8 @@ interface MentorsClientProps {
   initialMentors: Mentor[];
 }
 
+const ITEMS_PER_PAGE = 10;
+
 export const MentorsClient: React.FC<MentorsClientProps> = ({ initialMentors }) => {
   const searchParams = useSearchParams();
   const { toast } = useToast();
@@ -22,10 +24,17 @@ export const MentorsClient: React.FC<MentorsClientProps> = ({ initialMentors }) 
   const [mentorsList, setMentorsList] = useState<Mentor[]>(initialMentors);
   const [selectedMentorId, setSelectedMentorId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [isAddDrawerOpen, setIsAddDrawerOpen] = useState(false);
   const [editingMentor, setEditingMentor] = useState<Mentor | null>(null);
   const [deletingMentor, setDeletingMentor] = useState<Mentor | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
 
   // Real-time search filter
   const filteredMentors = mentorsList.filter((m) => {
@@ -40,6 +49,11 @@ export const MentorsClient: React.FC<MentorsClientProps> = ({ initialMentors }) 
       (m.bio && m.bio.toLowerCase().includes(q))
     );
   });
+
+  // Pagination calculation
+  const totalPages = Math.ceil(filteredMentors.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedMentors = filteredMentors.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handleSaveMentor = async (mentorData: Partial<Mentor>) => {
     try {
@@ -161,14 +175,14 @@ export const MentorsClient: React.FC<MentorsClientProps> = ({ initialMentors }) 
           type="text"
           placeholder="Search mentor name, company, or domain expertise..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 shadow-2xs"
         />
       </div>
 
-      {/* Mentors Grid Cards */}
+      {/* Mentors Grid Cards (10 per page) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredMentors.map((m) => (
+        {paginatedMentors.map((m) => (
           <Card key={m.id} className="flex flex-col justify-between space-y-4 hover:border-amber-300 transition-all group">
             <div>
               <div className="flex items-start justify-between">
@@ -259,6 +273,55 @@ export const MentorsClient: React.FC<MentorsClientProps> = ({ initialMentors }) 
           </Card>
         ))}
       </div>
+
+      {/* Pagination Footer Controls */}
+      {filteredMentors.length > 0 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200/80">
+          <div className="text-xs font-medium text-slate-500">
+            Showing <span className="font-bold text-slate-900">{startIndex + 1}</span> to{' '}
+            <span className="font-bold text-slate-900">
+              {Math.min(startIndex + ITEMS_PER_PAGE, filteredMentors.length)}
+            </span>{' '}
+            of <span className="font-bold text-slate-900">{filteredMentors.length}</span> mentors
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                title="Previous Page"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => (
+                <button
+                  key={pg}
+                  onClick={() => setCurrentPage(pg)}
+                  className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${
+                    currentPage === pg
+                      ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
+                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  {pg}
+                </button>
+              ))}
+
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                title="Next Page"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Profile Drawer */}
       <ProfileDrawer
