@@ -28,3 +28,25 @@ export const CREATE_MENTOR_QUERY = `
   })
   RETURN m
 `;
+
+export const UPDATE_MENTOR_QUERY = `
+  MATCH (m:Mentor {id: $id})
+  SET m.name = $name,
+      m.photo = $photo,
+      m.title = $title,
+      m.company = $company,
+      m.expertise = $expertise,
+      m.experienceYears = toInteger($experienceYears),
+      m.startupsMentoredCount = toInteger($startupsMentoredCount),
+      m.technologies = $technologies,
+      m.availability = $availability,
+      m.rating = toFloat($rating),
+      m.bio = $bio
+  RETURN m
+`;
+
+export const DELETE_MENTOR_QUERY = `
+  MATCH (m:Mentor {id: $id})
+  DETACH DELETE m
+`;
+
