@@ -204,4 +204,4 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 - **Deliverable**: GitHub Repository containing full source code, seed scripts, Cypher queries, and documentation.
 - **Recipient**: `hr@wexa.ai`
-- **Subject Line**: `CognoDB Assignment 2 – Ganesh`
+- **Subject Line**: `Build a Graph Database Application Assignment [Tushar Revankar]`
