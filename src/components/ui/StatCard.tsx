@@ -74,7 +74,7 @@ export const StatCard: React.FC<StatCardProps> = ({
       <Card
         onClick={onClick}
         className={clsx(
-          'cursor-pointer group relative overflow-hidden flex flex-col justify-between min-h-[160px] p-6 border-slate-200/90 bg-white shadow-sm transition-all duration-300',
+          'cursor-pointer group relative overflow-hidden flex flex-col justify-between min-h-[200px] p-7 border-slate-200/90 bg-white shadow-sm transition-all duration-300',
           'hover:bg-gradient-to-br hover:from-blue-600 hover:via-blue-600 hover:to-indigo-700 hover:border-blue-600 hover:shadow-xl hover:shadow-blue-500/25'
         )}
       >

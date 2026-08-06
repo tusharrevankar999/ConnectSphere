@@ -13,8 +13,6 @@ import { FounderService } from '@/lib/services/founderService';
 import { StartupService } from '@/lib/services/startupService';
 import { InvestorService } from '@/lib/services/investorService';
 import { MentorService } from '@/lib/services/mentorService';
-import { TechnologyService } from '@/lib/services/technologyService';
-import { IndustryService } from '@/lib/services/industryService';
 import { mockActivities, mockRecommendations } from '@/data/mockData';
 
 export const revalidate = 0; // Server-Side Rendering (SSR) on every request
@@ -24,16 +22,12 @@ export default async function DashboardPage() {
   const startupService = new StartupService();
   const investorService = new InvestorService();
   const mentorService = new MentorService();
-  const techService = new TechnologyService();
-  const indService = new IndustryService();
 
-  const [founders, startups, investors, mentors, technologies, industries] = await Promise.all([
+  const [founders, startups, investors, mentors] = await Promise.all([
     founderService.getFounders(),
     startupService.getStartups(),
     investorService.getInvestors(),
     mentorService.getMentors(),
-    techService.getTechnologies(),
-    indService.getIndustries(),
   ]);
 
   const stats = {
@@ -41,8 +35,6 @@ export default async function DashboardPage() {
     startupsCount: startups.length,
     investorsCount: investors.length,
     mentorsCount: mentors.length,
-    technologiesCount: technologies.length,
-    industriesCount: industries.length,
   };
 
   return (
@@ -65,8 +57,7 @@ export default async function DashboardPage() {
           </h1>
 
           <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed">
-            ConnectSphere leverages a high-performance graph database to map relationship topologies between 
-            Founders, Startups, Investors, Mentors, Technologies, and Industries in real-time.
+            ConnectSphere is a relationship-driven platform where founders, investors, mentors, startups, and skilled professionals connect to solve real business challenges, discover opportunities, share expertise, secure funding, find the right talent and resources, and collaborate to build the next generation of successful businesses.
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -97,7 +88,7 @@ export default async function DashboardPage() {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <StatCard
             title="Founders"
             value={stats.foundersCount}
@@ -133,15 +124,6 @@ export default async function DashboardPage() {
             iconBgColor="bg-amber-50"
             iconColor="text-amber-600"
             delay={0.2}
-          />
-          <StatCard
-            title="Industries"
-            value={stats.industriesCount}
-            trend="Market Sectors"
-            iconName="layers"
-            iconBgColor="bg-cyan-50"
-            iconColor="text-cyan-600"
-            delay={0.25}
           />
         </div>
       </section>
