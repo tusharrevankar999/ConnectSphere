@@ -20,3 +20,22 @@ export async function GET(request: NextRequest) {
     return handleApiError(error);
   }
 }
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    if (!body.name || !body.company) {
+      throw new Error('Name and company are required fields for creating a mentor.');
+    }
+
+    const mentorService = new MentorService();
+    const created = await mentorService.createMentor({
+      id: body.id || `mnt-${Date.now()}`,
+      ...body,
+    });
+
+    return NextResponse.json({ success: true, data: created }, { status: 201 });
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

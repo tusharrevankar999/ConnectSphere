@@ -1,5 +1,11 @@
 import { executeRead, executeWrite, testCognoConnection } from '../cognodb';
-import { GET_ALL_MENTORS_QUERY, GET_MENTOR_BY_ID_QUERY, CREATE_MENTOR_QUERY } from '../queries/mentorQueries';
+import { 
+  GET_ALL_MENTORS_QUERY, 
+  GET_MENTOR_BY_ID_QUERY, 
+  CREATE_MENTOR_QUERY, 
+  UPDATE_MENTOR_QUERY, 
+  DELETE_MENTOR_QUERY 
+} from '../queries/mentorQueries';
 import { Mentor } from '@/types';
 import { mockMentors } from '@/data/mockData';
 
@@ -84,5 +90,47 @@ export class MentorRepository {
       { ...mentor },
       (records) => records[0].get('m').properties as Mentor
     );
+  }
+
+  async update(id: string, mentor: Partial<Mentor>): Promise<Mentor> {
+    const existing = await this.getById(id);
+    if (!existing) {
+      throw new Error(`Mentor with id ${id} not found`);
+    }
+
+    const updated = { ...existing, ...mentor };
+
+    const isConnected = await testCognoConnection();
+    if (!isConnected) {
+      const idx = mockMentors.findIndex((m) => m.id === id);
+      if (idx !== -1) {
+        mockMentors[idx] = updated;
+      }
+      return updated;
+    }
+
+    return executeWrite(
+      UPDATE_MENTOR_QUERY,
+      { ...updated, id },
+      (records) => records[0].get('m').properties as Mentor
+    );
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const isConnected = await testCognoConnection();
+    if (!isConnected) {
+      const idx = mockMentors.findIndex((m) => m.id === id);
+      if (idx !== -1) {
+        mockMentors.splice(idx, 1);
+      }
+      return true;
+    }
+
+    await executeWrite(
+      DELETE_MENTOR_QUERY,
+      { id },
+      () => true
+    );
+    return true;
   }
 }
