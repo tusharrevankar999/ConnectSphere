@@ -135,7 +135,7 @@ export const RecommendationsClient: React.FC<RecommendationsClientProps> = ({ in
       <div className="bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 card-shadow space-y-3">
         <div className="flex items-center justify-between">
           <label htmlFor="ai-search-input" className="text-xs font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-amber-500" /> Smart AI LLM Match Engine
+            <Sparkles className="w-4 h-4 text-amber-500" /> Smart AI Match Engine
           </label>
 
           <span className="text-[11px] text-slate-500 flex items-center gap-1 font-medium">

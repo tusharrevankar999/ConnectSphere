@@ -117,6 +117,17 @@ export const MentorsClient: React.FC<MentorsClientProps> = ({ initialMentors }) 
     }
   };
 
+  const renderVal = (val: any, fallback = 0) => {
+    if (val === null || val === undefined) return fallback;
+    if (typeof val === 'number') return val;
+    if (typeof val === 'string') return val;
+    if (typeof val === 'object' && val !== null && typeof val.low === 'number') {
+      return val.low;
+    }
+    const parsed = Number(val);
+    return isNaN(parsed) ? fallback : parsed;
+  };
+
   return (
     <div className="space-y-6">
       {/* Header Section */}
@@ -200,14 +211,14 @@ export const MentorsClient: React.FC<MentorsClientProps> = ({ initialMentors }) 
 
               <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
                 <span className="flex items-center gap-1 font-bold text-slate-900">
-                  <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" /> {m.rating}
+                  <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" /> {renderVal(m.rating, 5.0)}
                 </span>
                 <span>•</span>
-                <span>{m.startupsMentoredCount} startups mentored</span>
+                <span>{renderVal(m.startupsMentoredCount, 0)} startups mentored</span>
                 {m.experienceYears && (
                   <>
                     <span>•</span>
-                    <span>{m.experienceYears} yrs exp</span>
+                    <span>{renderVal(m.experienceYears, 0)} yrs exp</span>
                   </>
                 )}
               </div>
