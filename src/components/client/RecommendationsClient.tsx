@@ -69,13 +69,16 @@ export const RecommendationsClient: React.FC<RecommendationsClientProps> = ({ in
       }
 
       setRecommendations(data.results || []);
-      setSearchEngine(data.engine === 'gemini-1.5-flash-llm' ? 'Gemini 1.5 LLM Engine' : 'Vector Semantic AI Engine');
+      const engineLabel = data.engine === 'groq-llama-3.3-70b' 
+        ? 'Groq Llama 3.3 LLM Engine' 
+        : data.engine === 'gemini-1.5-flash-llm' 
+        ? 'Gemini 1.5 LLM Engine' 
+        : 'Vector Semantic AI Engine';
+      setSearchEngine(engineLabel);
 
       toast({
         title: 'AI Search Complete',
-        description: `Found ${data.results?.length || 0} matching entities via ${
-          data.engine === 'gemini-1.5-flash-llm' ? 'Gemini LLM' : 'Vector Semantic AI Engine'
-        }.`,
+        description: `Found ${data.results?.length || 0} matching entities via ${engineLabel}.`,
         variant: 'success',
       });
     } catch (err) {
@@ -128,8 +131,8 @@ export const RecommendationsClient: React.FC<RecommendationsClientProps> = ({ in
         </div>
       </div>
 
-      {/* Smart AI Search Bar Input Box */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 card-shadow space-y-4">
+      {/* ChatGPT-Style Smart AI Search Textarea Prompt Box */}
+      <div className="bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 card-shadow space-y-3">
         <div className="flex items-center justify-between">
           <label htmlFor="ai-search-input" className="text-xs font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
             <Sparkles className="w-4 h-4 text-amber-500" /> Smart AI LLM Match Engine
@@ -140,53 +143,67 @@ export const RecommendationsClient: React.FC<RecommendationsClientProps> = ({ in
           </span>
         </div>
 
-        <div className="relative flex items-center">
-          <Search className="w-5 h-5 text-slate-400 absolute left-4 pointer-events-none" />
-
-          <input
+        {/* ChatGPT Style Textarea Container */}
+        <div className="relative rounded-2xl bg-slate-50/90 border border-slate-200 p-4 focus-within:ring-2 focus-within:ring-blue-500/30 focus-within:border-blue-600 focus-within:bg-white transition-all shadow-2xs">
+          <textarea
             id="ai-search-input"
-            type="text"
+            rows={3}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleAiSearch()}
-            placeholder="Type what you are looking for (e.g. 'Angel investors in AI Infrastructure', 'Next.js mentors', 'Rust founders')..."
-            className="w-full pl-12 pr-32 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-600 transition-all font-medium"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleAiSearch();
+              }
+            }}
+            placeholder="Ask AI: Describe who or what you are looking for (e.g. 'I am building a Next.js SaaS startup and need a Series A investor who focuses on AI infrastructure, plus an experienced mentor...'). Press Enter to search."
+            className="w-full bg-transparent text-sm sm:text-base text-slate-900 placeholder-slate-400 focus:outline-none resize-none font-medium leading-relaxed"
           />
 
-          <div className="absolute right-2 flex items-center gap-1.5">
-            {searchQuery && (
+          {/* Bottom Action Controls inside Textarea Container */}
+          <div className="flex items-center justify-between pt-2 border-t border-slate-200/60 mt-2">
+            <div className="flex items-center gap-2 text-xs text-slate-400 font-medium">
+              <span className="inline-flex items-center gap-1 bg-white px-2.5 py-1 rounded-lg border border-slate-200 text-[11px] font-semibold text-slate-600 shadow-2xs">
+                <Sparkles className="w-3 h-3 text-amber-500" /> {searchEngine ? searchEngine : 'Groq Llama 3.3 / Gemini Active'}
+              </span>
+              <span className="hidden sm:inline-block text-[11px]">Press Enter ↵ to search</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="px-3 py-1.5 rounded-xl text-xs text-slate-500 hover:text-slate-700 hover:bg-slate-200/60 transition-colors flex items-center gap-1 font-semibold"
+                  title="Clear Prompt"
+                >
+                  <X className="w-3.5 h-3.5" /> Clear
+                </button>
+              )}
+
               <button
                 type="button"
-                onClick={handleClearSearch}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-200/60 transition-colors"
-                title="Clear Search"
+                onClick={() => handleAiSearch()}
+                disabled={isSearching}
+                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg shadow-blue-500/25 transition-all flex items-center gap-2 text-xs"
               >
-                <X className="w-4 h-4" />
+                {isSearching ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Thinking...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" /> Search AI
+                  </>
+                )}
               </button>
-            )}
-
-            <button
-              type="button"
-              onClick={() => handleAiSearch()}
-              disabled={isSearching}
-              className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold px-4 py-2 rounded-xl shadow-md hover:shadow-lg shadow-blue-500/20 transition-all flex items-center gap-2 text-xs"
-            >
-              {isSearching ? (
-                <>
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Thinking...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300" /> Search AI
-                </>
-              )}
-            </button>
+            </div>
           </div>
         </div>
 
         {/* Quick Suggestion Pills */}
         <div className="flex flex-wrap items-center gap-2 pt-1">
-          <span className="text-xs font-semibold text-slate-400 mr-1">Suggested Searches:</span>
+          <span className="text-xs font-semibold text-slate-400 mr-1">Suggested Prompts:</span>
           {QUICK_PROMPTS.map((prompt, idx) => (
             <button
               key={idx}
