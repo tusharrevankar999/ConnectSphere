@@ -30,7 +30,7 @@ export const navItems = [
   // { name: 'Industries', href: '/industries', icon: Layers },
   { name: 'Recommendations', href: '/recommendations', icon: Sparkles, badge: 'AI Match' },
   // { name: 'Graph Explorer', href: '/graph-explorer', icon: GitMerge, badge: 'Live 2D' },
-  { name: 'Settings', href: '/settings', icon: Settings },
+  // { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
 
