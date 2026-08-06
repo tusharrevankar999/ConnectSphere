@@ -64,10 +64,39 @@ export class MentorRepository {
         }
       );
 
-      if (dbMentors.length === 0 && !options.search) {
-        return mockMentors.map(formatMentorNode);
+      // Combine DB mentors with mockMentors to ensure full directory is visible
+      const existingIds = new Set(dbMentors.map((m) => m.id));
+      const existingNames = new Set(dbMentors.map((m) => m.name.toLowerCase()));
+
+      const missingMockMentors = mockMentors
+        .map(formatMentorNode)
+        .filter((m) => !existingIds.has(m.id) && !existingNames.has(m.name.toLowerCase()));
+
+      // Automatically seed missing system mentors to live Neo4j DB in background
+      if (missingMockMentors.length > 0) {
+        Promise.all(
+          missingMockMentors.map((m) =>
+            executeWrite(CREATE_MENTOR_QUERY, { ...m }).catch(() => {})
+          )
+        ).catch(() => {});
       }
-      return dbMentors;
+
+      let combined = [...dbMentors, ...missingMockMentors];
+
+      if (options.search) {
+        const q = options.search.toLowerCase();
+        combined = combined.filter((m) =>
+          m.name.toLowerCase().includes(q) ||
+          m.company.toLowerCase().includes(q) ||
+          m.title.toLowerCase().includes(q)
+        );
+      }
+
+      if (options.limit) {
+        combined = combined.slice(0, options.limit);
+      }
+
+      return combined;
     } catch {
       return mockMentors.map(formatMentorNode);
     }
@@ -102,7 +131,7 @@ export class MentorRepository {
     const sanitizedMentor = formatMentorNode(mentor);
     const isConnected = await testCognoConnection();
     if (!isConnected) {
-      mockMentors.push(sanitizedMentor);
+      mockMentors.unshift(sanitizedMentor);
       return sanitizedMentor;
     }
 
